@@ -671,7 +671,7 @@ if base == 'GUI DEMO':
             'Employee', 'Logistics', 'Account', 'Bed Information',
             'Date of Admittance', 'List of Doctors','Emergency Contacts',
             'List of Law Enforcement','Medicine Inventory',
-            'Medicine Prescriptions','List of Nurses','Operations Staff','Patients','Query1','Query3','Query4','Query8'))
+            'Medicine Prescriptions','List of Nurses','Operations Staff','Patients','View Doctors and Nurses','Occupied Beds','Employee Accounts','View Emloyees'))
 
         if options == 'Employee':
             source = employee
@@ -699,13 +699,13 @@ if base == 'GUI DEMO':
             source = op_staff
         if options == 'Patients':
             source = patients
-        if options == 'Query1':
+        if options == 'View Doctors and Nurses':
             source = Query1
-        if options == 'Query3':
+        if options == 'Occupied Beds':
             source = Query3
-        if options =='Query4':
+        if options =='Employee Accounts':
             source = Query4
-        if options == 'Query8':
+        if options == 'View Emloyees':
             source = Query8
    
 
@@ -903,7 +903,7 @@ if base == 'GUI DEMO':
                     if options == 'Employee':
                         cur.execute('''DELETE FROM EMPLOYEE
     WHERE EmployeeID = %d
-    '''%(Bed_id)) 
+    '''%(empid)) 
 
                     if options == 'Logistics':
                        cur.execute('''DELETE FROM LOGISTICS
@@ -963,7 +963,7 @@ if base == 'GUI DEMO':
     
         options = st.selectbox('Select Table to display',('Bed Information',
             'Date of Admittance','Emergency Contacts','Medicine Inventory',
-            'Medicine Prescriptions','Patients','Query2','Query5','Query6','Query7'))
+            'Medicine Prescriptions','Patients','Patient Prescriptions','Patients Without Nausea','Medicine Information','Young Patients'))
 
         if options == 'Bed Information':
             source = bed
@@ -977,13 +977,13 @@ if base == 'GUI DEMO':
             source = medicinepre
         if options == 'Patients':
             source = patients
-        if options == 'Query2':
+        if options == 'Patient Prescriptions':
             source = Query2
-        if options == 'Query5':
+        if options == 'Patients Without Nausea':
             source = Query5
-        if options == 'Query6':
+        if options == 'Medicine Information':
             source = Query6
-        if options == 'Query7':
+        if options == 'Young Patients':
             source = Query7
         edit = st.checkbox('Enable Editing')
         if edit:
