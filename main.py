@@ -4,7 +4,7 @@ import pandas as pd
 from PIL import Image
 
 dsnStr = cx_Oracle.makedsn("oracle.scs.ryerson.ca", "1521", "orcl")
-conn = cx_Oracle.connect(, dsn=dsnStr)
+conn = cx_Oracle.connect('', dsn=dsnStr)
 print (conn.version)
 
 loggedin= False
@@ -131,6 +131,7 @@ def op_staff():
 
     OpStaffdf = pd.DataFrame(pull, columns = ['JOB_TITLE', 'EMPLOYEEID'])
     print(OpStaffdf)
+    return(OpStaffdf)
 
 def patients():
     cur.execute("""
@@ -201,9 +202,10 @@ WHERE p.Age <= 21 AND p.PatientID = ec.PatientID
     """)
     pull = cur.fetchall()
 
-    query6 = pd.DataFrame(pull, columns =['MEDICINE ID','MEDICINE NAME','DESCRIPTION','INVENTORY'] )
-    print(query6)
-    return(query6)
+    query7 = pd.DataFrame(pull, columns =['PATIENT ID','FULL NAME','SYMPTOMS','EMERGENCY CONTACT','RELATION','TELEPHONE NUMBER'] )
+    print(query7)
+    return(query7)
+
 #def Query8():
 
 #SchoolDb	m534khan@//oracle.scs.ryerson.ca:1521/orcl
@@ -235,7 +237,7 @@ if loggedin == True and stay and _account['EMP_PRIVILEGE'][use]=='A':
         'Employee', 'Logistics', 'Account', 'Bed Information',
         'Date of Admittance', 'List of Doctors','Emergency Contacts',
         'List of Law Enforcement','Medicine Inventory',
-        'Medicine Prescriptions','List of Nurses','Operations Staff','Patients','Schedule'))
+        'Medicine Prescriptions','List of Nurses','Operations Staff','Patients'))
 
     if options == 'Employee':
         source = employee
@@ -263,9 +265,254 @@ if loggedin == True and stay and _account['EMP_PRIVILEGE'][use]=='A':
         source = op_staff
     if options == 'Patients':
         source = patients
-    if options == 'Schedule':
-        source = schedule
+   
 
+    edit = st.checkbox('Enable Editing')
+    if edit:
+        add = st.radio('Select',('Add Information','Delete Information'))
+        if add == 'Add Information':
+
+            if options == 'Employee':
+               Fname = st.text_input('Full Name')
+               SIN = int(st.text_input('SIN',value = '1'))
+               empid = int(st.text_input('Employee ID',value = '1'))
+               Emptype = st.text_input('Employee Type')
+
+            if options == 'Logistics':
+               nump = int(st.text_input('Number of Patients',value = '1'))
+               numd = int(st.text_input('Number of Doctors',value = '1'))
+               numn = int(st.text_input('Number of Nurses',value = '1'))
+               numb = int(st.text_input('Number of Beds',value = '1'))
+               logdate = st.text_input('Logistic Date')
+
+            if options == 'Account':
+                usern = st.text_input('USERNAME')
+                passn = st.text_input('PASSWORD', type = 'password')
+                empp = st.text_input('Employee Privilege')
+                empid = int(st.text_input('Employee ID',value = '1'))
+
+            if options == 'List of Doctors':
+                spec = st.text_input('Specialization')
+                empid = int(st.text_input('Employee Id',value = '1'))
+
+            if options == 'List of Law Enforcement':
+                proff = st.text_input('Profession')
+                empid = int(st.text_input('Employee Id',value = '1'))
+
+            if options == 'List of Nurses':
+                empid = int(st.text_input('Employee Id',value = '1'))
+                spec = st.text_input('Specialization')
+
+            if options == 'Operations Staff':
+                spec = st.text_input('Job Title')
+                empid = int(st.text_input('Employee Id',value = '1'))
+
+            if options == 'Bed Information':
+                Bed_id = st.text_input('Bed Id', value = '1')
+                Bed_id = int(Bed_id)
+                patid = st.text_input('Patient Id', value = '1')
+                patid = int(patid)
+                occupied = st.text_input('Occupied')
+
+            if options == 'Date of Admittance':
+                datere = st.text_input('Date of Release')
+                logdate = st.text_input('logistic Date')
+                patid = st.text_input('Patient Id', value = '1')
+                patid = int(patid)
+        
+            if options == 'Emergency Contacts':
+                Fname = st.text_input('Full name')
+                Relation = st.text_input('Relation')
+                Tnum = st.text_input('Telephone Number', value = '1')
+                address = st.text_input('Address')
+                patid = st.text_input('Patient Id', value = '1')
+                Tnum = int(Tnum)
+                patid = int(patid)
+
+            if options == 'Medicine Inventory':
+                MedId = st.text_input('Medicine Id', value = '1')
+                MedId = int(MedId)
+                Name = st.text_input('Name')
+                Desc = st.text_input('Description of Medication')
+                inv = st.text_input('Inventory', value = '1')
+                inv = int(inv)
+
+            if options == 'Medicine Prescriptions':
+                MedId = st.text_input('Medicine Id', value = '1')
+                MedId = int(MedId)
+                patid = st.text_input('Patient Id', value = '1')
+                patid = int(patid)
+                dosage = st.text_input('Dosage Prescription')
+                Consumpt = st.text_input('Consumption Cycle')
+
+            if options == 'Patients':
+                patid = st.text_input('Patient Id', value = '1')
+                patid = int(patid)
+                Fname = st.text_input('FUll Name')
+                Age = st.text_input('Age', value = '1')
+                Age = int(Age)
+                gender = st.text_input('Gender')
+                sin = st.text_input('SIN', value = '1')
+                sin = int(sin)
+                Healthcn = st.text_input('Health Card Number', value = '1')
+                Healthcn = int(Healthcn)
+                symtoms = st.text_input('Symptoms')
+
+            if st.button('Submit'):
+                if options == 'Employee':
+                    cur.execute('''INSERT INTO EMPLOYEE
+VALUES('%s', '%d','%d','nurses')'''%(Fname,SIN,empid,Emptype))
+                
+                if options == 'Logistics':
+                    cur.execute('''INSERT INTO LOGISTICS
+VALUES(%d,%d,%d,%d,TO_DATE('%s','DD/MM/YYYY'))'''%(nump,numd,numn,numb,logdate))
+               
+                if options == 'Account':
+                    cur.execute('''INSERT INTO account
+VALUES('%s', '%s', '%s', '%d')'''%(usern,passn,empp,empid))
+                
+                if options == 'List of Doctors':
+                    cur.execute('''INSERT INTO doctors
+VALUES('%s', '%d')'''%(spec,empid))
+               
+                if options == 'List of Law Enforcement':
+                    cur.execute('''INSERT INTO Law_Enforcement
+VALUES('%s', '%d')'''%(proff,empid))
+
+                if options == 'List of Nurses':
+                    cur.execute('''INSERT INTO nurses
+VALUES('%d', '%s')'''%(empid, spec))
+               
+                if options == 'Operations Staff':
+                    cur.execute('''INSERT INTO Operations_Staff
+VALUES('%s', '%d')'''%(spec,empid))
+
+                if options == 'Bed Information':
+                    cur.execute('''INSERT INTO Bed
+    VALUES('%d','%d', '%s')'''%(Bed_id,patid,occupied))    
+
+                if options == 'Date of Admittance':
+                    cur.execute('''INSERT INTO Date_Admitted
+    VALUES(TO_DATE('%s','DD/MM/YYYY'), TO_DATE('%s','DD/MM/YYYY'), '%d')'''%(datere,logdate,patid))   
+                        
+                if options == 'Emergency Contacts':
+                    cur.execute('''INSERT INTO Emergency_Contact
+    VALUES('%s', '%s', '%d','%s', '%d')'''%(Fname,Relation,Tnum,address,patid)) 
+
+                if options == 'Medicine Inventory':
+                    cur.execute('''INSERT INTO MEDICINE
+    VALUES('%d','%s','%s','%d')'''%(MedId,Name,Desc,inv)) 
+
+                if options == 'Medicine Prescriptions':
+                    cur.execute('''INSERT INTO Medicine_Prescription
+    VALUES('%d','%d','%s', '%s')'''%(MedId,patid,dosage,Consumpt)) 
+
+                if options == 'Patients':
+                    cur.execute('''INSERT INTO PATIENTS
+    VALUES('%d','%s', '%d', '%s', '%d', '%d','%s')'''%(patid,Fname,Age,gender,sin,Healthcn,symtoms))
+
+        if add == 'Delete Information':
+            if options == 'Employee':
+               empid = int(st.text_input('Employee ID',value = '1'))
+
+            if options == 'Logistics':
+               logdate = st.text_input('Logistic Date')
+
+            if options == 'Account':
+                usern = st.text_input('USERNAME')
+
+            if options == 'List of Doctors':
+                empid = int(st.text_input('Employee Id',value = '1'))
+
+            if options == 'List of Law Enforcement':
+                empid = int(st.text_input('Employee Id',value = '1'))
+
+            if options == 'List of Nurses':
+                empid = int(st.text_input('Employee Id',value = '1'))
+
+            if options == 'Operations Staff':
+                empid = int(st.text_input('Employee Id',value = '1'))
+
+            if options == 'Bed Information':
+                Bed_id = st.text_input('Bed Id', value = '1')
+                Bed_id = int(Bed_id)
+
+            if options == 'Date of Admittance':
+                patid = st.text_input('Patient Id', value = '1')
+                patid = int(patid)
+
+            if options == 'Emergency Contacts':
+                patid = st.text_input('Patient Id', value = '1')
+                patid = int(patid)
+
+            if options == 'Medicine Inventory':
+                MedId = st.text_input('Medicine Id', value = '1')
+                MedId = int(MedId)
+               
+            if options == 'Medicine Prescriptions':
+                MedId = st.text_input('Medicine Id', value = '1')
+                MedId = int(MedId)
+
+            if options == 'Patients':
+                patid = st.text_input('Patient Id', value = '1')
+                patid = int(patid)
+
+            if st.button('Submit'): 
+                if options == 'Employee':
+                    cur.execute('''DELETE FROM EMPLOYEE
+WHERE EmployeeID = %d
+'''%(Bed_id)) 
+
+                if options == 'Logistics':
+                   cur.execute('''DELETE FROM LOGISTICS
+WHERE LogisticsDate = TO_DATE('%s','DD/MM/YYYY')'''%(logdate)) 
+
+                if options == 'Account':
+                    cur.execute('''DELETE FROM account
+WHERE Username = %s'''%(usern)) 
+
+                if options == 'List of Doctors':
+                    cur.execute('''DELETE FROM doctors
+WHERE EmployeeID = %d'''%(empid)) 
+
+                if options == 'List of Law Enforcement':
+                    cur.execute('''DELETE FROM Law_Enforcement
+WHERE EmployeeID = %d'''%(empid)) 
+
+                if options == 'List of Nurses':
+                    cur.execute('''DELETE FROM nurses
+WHERE EmployeeID = %d'''%(empid)) 
+
+                if options == 'Operations Staff':
+                    cur.execute('''DELETE FROM Operations_Staff
+WHERE EmployeeID = %d'''%(empid)) 
+
+                if options == 'Bed Information':
+                    cur.execute('''DELETE FROM Bed
+WHERE BED_id = %d'''%(Bed_id))    
+
+                if options == 'Date of Admittance':
+                    cur.execute('''DELETE FROM Date_Admitted
+WHERE PatientID = %d'''%(patid))   
+                        
+                if options == 'Emergency Contacts':
+                    cur.execute('''DELETE FROM Emergency_Contact
+WHERE PatientID = %d'''%(patid)) 
+
+                if options == 'Medicine Inventory':
+                    cur.execute('''DELETE FROM MEDICINE
+WHERE Medicine_ID = %d'''%(MedId)) 
+
+                if options == 'Medicine Prescriptions':
+                    cur.execute('''DELETE FROM Medicine_Prescription
+WHERE Medicine_ID = %d'''%(MedId)) 
+
+                if options == 'Patients':
+                    cur.execute('''DELETE FROM Patients
+WHERE PatientID = %d'''%(patid))
+                
+            conn.commit()
+    
     st.table(source())
 
     
@@ -274,7 +521,7 @@ if loggedin == True and stay and _account['EMP_PRIVILEGE'][use]=='B':
     
     options = st.selectbox('Select Table to display',('Bed Information',
         'Date of Admittance','Emergency Contacts','Medicine Inventory',
-        'Medicine Prescriptions','Patients','Query2','Query5','Query6'))
+        'Medicine Prescriptions','Patients','Query2','Query5','Query6','Query7'))
 
     if options == 'Bed Information':
         source = bed
@@ -294,6 +541,8 @@ if loggedin == True and stay and _account['EMP_PRIVILEGE'][use]=='B':
         source = Query5
     if options == 'Query6':
         source = Query6
+    if options == 'Query7':
+        source = Query7
     edit = st.checkbox('Enable Editing')
     if edit:
         add = st.radio('Select',('Add Information','Delete Information'))
