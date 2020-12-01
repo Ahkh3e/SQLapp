@@ -1,3 +1,11 @@
+#REQUIREMENTS
+#Run commands to install and initialize dependencies
+#pip install streamlit
+#streamlit hello
+#pip install python-dotenv
+#pip install pandas
+#pip install cx-Oracle
+
 import streamlit as st
 import cx_Oracle
 import pandas as pd
