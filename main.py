@@ -3,14 +3,15 @@ import cx_Oracle
 import pandas as pd
 from PIL import Image
 import getpass
+import os
+from dotenv import load_dotenv
 
-@st.cache
-def enter():
-    return getpass.getpass()
-passwordd = enter()
+load_dotenv()
+ORCL_USER = os.getenv('ORCL_USER')
+ORCL_PASSWD = os.getenv('ORCL_PASSWD')
 
 dsnStr = cx_Oracle.makedsn("oracle.scs.ryerson.ca", "1521", "orcl")
-conn = cx_Oracle.connect('m534khan',passwordd, dsn=dsnStr)
+conn = cx_Oracle.connect(ORCL_USER,ORCL_PASSWD, dsn=dsnStr)
 print (conn.version)
 
 loggedin= False
